@@ -34,12 +34,12 @@ markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 
 import re
 import typing
+from xml.etree.ElementTree import Element, SubElement
 
 from markdown.blockprocessors import BlockProcessor
 from markdown.core import Markdown
 from markdown.extensions import Extension
 from markdown.preprocessors import Preprocessor
-from xml.etree.ElementTree import Element, SubElement
 
 SOURCE_RE = r"%%%SOURCE (.*):([0-9]+):([0-9]+)"
 START_RE = r"%%%START ([A-Z]+) (.*)"
@@ -68,10 +68,22 @@ def percent_source(path: str, lineno: int = None, lineno_end: int = None) -> str
     Line numbers are expected to start at 1.
     """
     with open(path) as f:
-        src = "".join(f.readlines()[lineno - 1:lineno_end]).strip()
+        src = "".join(f.readlines()[lineno - 1 : lineno_end]).strip()
+
+    fences = sorted(re.findall(r"`+", src), key=len)
+    fence = "`" * (len(fences[-1]) + 1) or "```"
 
     return (
-        f"<details><summary>source</summary>\n\n````python\n{src}\n````\n\n</details>"
+        "<details>"
+        "<summary>source</summary>"
+        "\n\n"
+        f"{fence}python"
+        "\n"
+        f"{src}"
+        "\n"
+        f"{fence}"
+        "\n\n"
+        "</details>"
     )
 
 
@@ -137,7 +149,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
                     m.group(0),
                     percent_source(
                         f"{self.path}/{m.group(1)}", int(m.group(2)), int(m.group(3))
-                    )
+                    ),
                 )
 
         return lines
@@ -191,7 +203,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
                 blocks[i] = re.sub(END_RE, "", b)
 
                 e = SubElement(parent, "div", attrib={"class": "objectdef"})
-                self.parser.parseBlocks(e, blocks[0:i + 1])
+                self.parser.parseBlocks(e, blocks[0 : i + 1])
 
                 for _ in range(0, i + 1):
                     blocks.pop(0)
