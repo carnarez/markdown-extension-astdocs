@@ -70,8 +70,11 @@ def percent_source(path: str, lineno: int = None, lineno_end: int = None) -> str
     with open(path) as f:
         src = "".join(f.readlines()[lineno - 1 : lineno_end]).strip()
 
-    fences = sorted(re.findall(r"`+", src), key=len)
-    fence = "`" * (len(fences[-1]) + 1) or "```"
+    if "```" in src:
+        fences = sorted(re.findall(r"`+", src), key=len)
+        fence = "`" * (len(fences[-1]) + 1)
+    else:
+        fence = "```"
 
     return (
         "<details>"
