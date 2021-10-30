@@ -41,9 +41,9 @@ from markdown.core import Markdown
 from markdown.extensions import Extension
 from markdown.preprocessors import Preprocessor
 
-SOURCE_RE = r"%%%SOURCE (.*):([0-9]+):([0-9]+)"
-START_RE = r"%%%START ([A-Z]+) (.*)"
-END_RE = r"%%%END ([A-Z]+) (.*)"
+SOURCE_RE: str = r"%%%SOURCE (.*):([0-9]+):([0-9]+)"
+START_RE: str = r"%%%START ([A-Z]+) (.*)"
+END_RE: str = r"%%%END ([A-Z]+) (.*)"
 
 
 def percent_source(path: str, lineno: int = None, lineno_end: int = None) -> str:
@@ -200,7 +200,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
         """
         return re.match(START_RE, block)
 
-    def run(self, parent: Element, blocks: typing.List[str]):
+    def run(self, parent: Element, blocks: typing.List[str]) -> None:
         """Bound the block within the remaining blocks and render it.
 
         Parameters
