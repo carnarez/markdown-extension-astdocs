@@ -146,14 +146,26 @@ class AstdocsSourcePreprocessor(Preprocessor):
         : typing.List[str]
             Same list of lines, processed.
         """
+        escaped = 0
+
         for i, line in enumerate(lines):
-            for m in re.finditer(SOURCE_RE, line):
-                lines[i] = line.replace(
-                    m.group(0),
-                    percent_source(
-                        f"{self.path}/{m.group(1)}", int(m.group(2)), int(m.group(3))
-                    ),
-                )
+
+            if line.startswith("```"):
+                escaped = line.count("`")
+
+            if escaped and line == escaped * "`":
+                escaped = 0
+
+            if not escaped:
+                for m in re.finditer(SOURCE_RE, line):
+                    lines[i] = line.replace(
+                        m.group(0),
+                        percent_source(
+                            f"{self.path}/{m.group(1)}",
+                            int(m.group(2)),
+                            int(m.group(3)),
+                        ),
+                    )
 
         return lines
 
