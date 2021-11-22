@@ -58,7 +58,7 @@ Read code from source file and substitute the associated `%%%SOURCE ...` marker.
 **Parameters:**
 
 - `path` \[`str`\]: Path to the source file to extract code.
-- `lineno` \[`int`\]: Beginning of the code block. Defaults to `None`.
+- `lineno` \[`int`\]: Beginning of the code block. Defaults to `1`.
 - `lineno_end` \[`int`\]: End of the code block. Defaults to `None`.
 
 **Returns:**
@@ -130,7 +130,7 @@ run(lines: typing.List[str]) -> typing.List[str]:
 
 Overwritten method to process the input `Markdown` lines.
 
-**Paramaters:**
+**Parameters:**
 
 - `lines` \[`typing.List[str]`\]: `Markdown` content (split by `\n`).
 

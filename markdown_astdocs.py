@@ -46,7 +46,7 @@ START_RE: str = r"%%%START ([A-Z]+) (.*)"
 END_RE: str = r"%%%END ([A-Z]+) (.*)"
 
 
-def percent_source(path: str, lineno: int = None, lineno_end: int = None) -> str:
+def percent_source(path: str, lineno: int = 1, lineno_end: int = None) -> str:
     """Read code from source file and substitute the associated `%%%SOURCE ...` marker.
 
     Parameters
@@ -54,7 +54,7 @@ def percent_source(path: str, lineno: int = None, lineno_end: int = None) -> str
     path : str
         Path to the source file to extract code.
     lineno : int
-        Beginning of the code block. Defaults to `None`.
+        Beginning of the code block. Defaults to `1`.
     lineno_end : int
         End of the code block. Defaults to `None`.
 
@@ -136,7 +136,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
     def run(self, lines: typing.List[str]) -> typing.List[str]:
         r"""Overwritten method to process the input `Markdown` lines.
 
-        Paramaters
+        Parameters
         ----------
         lines : typing.List[str]
             `Markdown` content (split by `\n`).
@@ -183,7 +183,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
         """
         super().__init__(parser)
 
-    def test(self, parent: Element, block: str) -> re.Match:
+    def test(self, parent: Element, block: str) -> re.Match:  # type: ignore
         """Check if the `run()` method should be called to process the block.
 
         Parameters
@@ -198,7 +198,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
         : re.Match
             Match object if pattern is found, `None` otherwise.
         """
-        return re.match(START_RE, block)
+        return re.match(START_RE, block)  # type: ignore
 
     def run(self, parent: Element, blocks: typing.List[str]) -> None:
         """Bound the block within the remaining blocks and render it.
