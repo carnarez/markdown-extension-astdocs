@@ -35,15 +35,20 @@ markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 
 **Functions:**
 
-- [`percent_source()`](#markdown_astdocspercent_source)
-- [`percent_start()`](#markdown_astdocspercent_start)
-- [`percent_end()`](#markdown_astdocspercent_end)
+- [`percent_source()`](#markdown_astdocspercent_source): Read code from source file and
+  substitute the associated `%%%SOURCE ...` marker.
+- [`percent_start()`](#markdown_astdocspercent_start): Substitute a `%%%START ...`
+  marker.
+- [`percent_end()`](#markdown_astdocspercent_end): Substitute a `%%%END ...` marker.
 
 **Classes:**
 
-- [`AstdocsSourcePreprocessor`](#markdown_astdocsastdocssourcepreprocessor)
-- [`AstdocsStartEndBlockProcessor`](#markdown_astdocsastdocsstartendblockprocessor)
-- [`AstdocsExtension`](#markdown_astdocsastdocsextension)
+- [`AstdocsSourcePreprocessor`](#markdown_astdocsastdocssourcepreprocessor): Catch and
+  replace the `%%%SOURCE ...` markers.
+- [`AstdocsStartEndBlockProcessor`](#markdown_astdocsastdocsstartendblockprocessor):
+  Process `%%%START ...` to `%%%END ...` blocks.
+- [`AstdocsExtension`](#markdown_astdocsastdocsextension): Extension to be imported when
+  calling for the renderer.
 
 ## Functions
 
@@ -101,7 +106,8 @@ Catch and replace the `%%%SOURCE ...` markers.
 
 **Methods:**
 
-- [`run()`](#markdown_astdocsastdocssourcepreprocessorrun)
+- [`run()`](#markdown_astdocsastdocssourcepreprocessorrun): Overwritten method to
+  process the input `Markdown` lines.
 
 #### Constructor
 
@@ -144,8 +150,10 @@ Process `%%%START ...` to `%%%END ...` blocks.
 
 **Methods:**
 
-- [`test()`](#markdown_astdocsastdocsstartendblockprocessortest)
-- [`run()`](#markdown_astdocsastdocsstartendblockprocessorrun)
+- [`test()`](#markdown_astdocsastdocsstartendblockprocessortest): Check if the `run()`
+  method should be called to process the block.
+- [`run()`](#markdown_astdocsastdocsstartendblockprocessorrun): Bound the block within
+  the remaining blocks and render it.
 
 #### Constructor
 
@@ -199,7 +207,8 @@ Extension to be imported when calling for the renderer.
 
 **Methods:**
 
-- [`extendMarkdown()`](#markdown_astdocsastdocsextensionextendmarkdown)
+- [`extendMarkdown()`](#markdown_astdocsastdocsextensionextendmarkdown): Overwritten
+  method to process the content.
 
 #### Constructor
 
