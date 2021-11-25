@@ -190,7 +190,7 @@ Check if the `run()` method should be called to process the block.
 ##### `markdown_astdocs.AstdocsStartEndBlockProcessor.run`
 
 ```python
-run(parent: Element, blocks: typing.List[str]) -> None:
+run(parent: Element, blocks: typing.List[str]):
 ```
 
 Bound the block within the remaining blocks and render it.

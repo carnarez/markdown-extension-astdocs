@@ -200,7 +200,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
         """
         return re.match(START_RE, block)  # type: ignore
 
-    def run(self, parent: Element, blocks: typing.List[str]) -> None:
+    def run(self, parent: Element, blocks: typing.List[str]):
         """Bound the block within the remaining blocks and render it.
 
         Parameters
