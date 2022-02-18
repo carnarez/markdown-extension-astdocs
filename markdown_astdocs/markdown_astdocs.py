@@ -33,7 +33,6 @@ markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 '''
 
 import re
-import typing
 from xml.etree.ElementTree import Element, SubElement
 
 from markdown.blockprocessors import BlockProcessor
@@ -133,17 +132,17 @@ class AstdocsSourcePreprocessor(Preprocessor):
         super().__init__(md)
         self.path = path
 
-    def run(self, lines: typing.List[str]) -> typing.List[str]:
+    def run(self, lines: list[str]) -> list[str]:
         r"""Overwritten method to process the input `Markdown` lines.
 
         Parameters
         ----------
-        lines : typing.List[str]
+        lines : list[str]
             `Markdown` content (split by `\n`).
 
         Returns
         -------
-        : typing.List[str]
+        : list[str]
             Same list of lines, processed.
         """
         escaped = 0
@@ -200,14 +199,14 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
         """
         return re.match(START_RE, block)  # type: ignore
 
-    def run(self, parent: Element, blocks: typing.List[str]):
+    def run(self, parent: Element, blocks: list[str]):
         """Bound the block within the remaining blocks and render it.
 
         Parameters
         ----------
         parent : xml.etree.ElementTree.Element
             Parent element that will host the tree of the current block, once rendered.
-        blocks : typing.List[str]
+        blocks : list[str]
             List of the remaining lines to process.
         """
         block = blocks[0]

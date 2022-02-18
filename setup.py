@@ -8,7 +8,7 @@ setuptools.setup(
     install_requires=["markdown"],
     name="markdown-astdocs",
     packages=["markdown_astdocs"],
-    package_data={"markdown_astdocs": ["*.pyi", "py.typed"]},
+    package_data={"markdown_astdocs": ["py.typed"]},
     url="https://github.com/carnarez/markdown-astdocs",
     version="0.0.1",
 )
