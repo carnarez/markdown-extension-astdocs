@@ -9,7 +9,7 @@ See [this repo](https://github.com/carnarez/astdocs) for `astdocs`.
 * `ASTDOCS_WITH_LINENOS` shows the line numbers of the object in the code source;
   replaced by `<details><summary>source</summary>...</details>` logic.
 
-Example
+Example:
 -------
 ````python
 import markdown
@@ -30,11 +30,14 @@ Process CLI calls.
 
 markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 ````
+
 '''
 
+import pathlib
 import re
 from xml.etree.ElementTree import Element, SubElement
 
+from markdown.blockparser import BlockParser
 from markdown.blockprocessors import BlockProcessor
 from markdown.core import Markdown
 from markdown.extensions import Extension
@@ -45,7 +48,7 @@ START_RE: str = r"%%%START ([A-Z]+) (.*)"
 END_RE: str = r"%%%END ([A-Z]+) (.*)"
 
 
-def percent_source(path: str, lineno: int = 1, lineno_end: int = None) -> str:
+def percent_source(path: str, lineno: int = 1, lineno_end: int | None = None) -> str:
     """Read code from source file and substitute the associated `%%%SOURCE ...` marker.
 
     Parameters
@@ -66,7 +69,7 @@ def percent_source(path: str, lineno: int = 1, lineno_end: int = None) -> str:
     -----
     Line numbers are expected to start at 1.
     """
-    with open(path) as f:
+    with pathlib.Path(path).open() as f:
         src = "".join(f.readlines()[lineno - 1 : lineno_end]).strip()
 
     if "```" in src:
@@ -114,7 +117,7 @@ def percent_end() -> str:
 class AstdocsSourcePreprocessor(Preprocessor):
     """Catch and replace the `%%%SOURCE ...` markers."""
 
-    def __init__(self, md: Markdown, path: str):
+    def __init__(self, md: Markdown, path: str) -> None:
         """All methods inherited, but the `run()` one below.
 
         Parameters
@@ -148,7 +151,6 @@ class AstdocsSourcePreprocessor(Preprocessor):
         escaped = 0
 
         for i, line in enumerate(lines):
-
             if line.startswith("```"):
                 escaped = line.count("`")
 
@@ -172,17 +174,17 @@ class AstdocsSourcePreprocessor(Preprocessor):
 class AstdocsStartEndBlockProcessor(BlockProcessor):
     """Process `%%%START ...` to `%%%END ...` blocks."""
 
-    def __init__(self, parser):
+    def __init__(self, parser: BlockParser) -> None:
         """All methods inherited, but the `test()` and `run()` ones below.
 
         Parameters
         ----------
-        parser
+        parser: markdown.blockparser.BlockParser
             Parser of the `Markdown` object to process.
         """
         super().__init__(parser)
 
-    def test(self, parent: Element, block: str) -> re.Match:  # type: ignore
+    def test(self, parent: Element, block: str) -> bool:
         """Check if the `run()` method should be called to process the block.
 
         Parameters
@@ -194,12 +196,12 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
 
         Returns
         -------
-        : re.Match
-            Match object if pattern is found, `None` otherwise.
+        : bool
+            `True` if pattern is found, `False` otherwise.
         """
-        return re.match(START_RE, block)  # type: ignore
+        return re.match(START_RE, block) is not None
 
-    def run(self, parent: Element, blocks: list[str]):
+    def run(self, parent: Element, blocks: list[str]) -> None:
         """Bound the block within the remaining blocks and render it.
 
         Parameters
@@ -230,7 +232,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
 class AstdocsExtension(Extension):
     """Extension to be imported when calling for the renderer."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, path: str = ".", **kwargs) -> None:
         """Make the extension configurable.
 
         Parameters
@@ -244,11 +246,11 @@ class AstdocsExtension(Extension):
         HTML noise around them, hence the high priority.
         """
         self.config = {
-            "path": [".", "Extra path prefix to add when fishing for the source"],
+            "path": [path, "Extra path prefix to add when fishing for the source"],
         }
-        super(AstdocsExtension, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
-    def extendMarkdown(self, md: Markdown):
+    def extendMarkdown(self, md: Markdown) -> None:
         """Overwritten method to process the content.
 
         Parameters
