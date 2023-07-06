@@ -48,72 +48,6 @@ START_RE: str = r"%%%START ([A-Z]+) (.*)"
 END_RE: str = r"%%%END ([A-Z]+) (.*)"
 
 
-def percent_source(path: str, lineno: int = 1, lineno_end: int | None = None) -> str:
-    """Read code from source file and substitute the associated `%%%SOURCE ...` marker.
-
-    Parameters
-    ----------
-    path : str
-        Path to the source file to extract code.
-    lineno : int
-        Beginning of the code block. Defaults to `1`.
-    lineno_end : int
-        End of the code block. Defaults to `None`.
-
-    Returns
-    -------
-    : str
-        HTML replacement.
-
-    Notes
-    -----
-    Line numbers are expected to start at 1.
-    """
-    with pathlib.Path(path).open() as f:
-        src = "".join(f.readlines()[lineno - 1 : lineno_end]).strip()
-
-    if "```" in src:
-        fences = sorted(re.findall(r"`+", src), key=len)
-        fence = "`" * (len(fences[-1]) + 1)
-    else:
-        fence = "```"
-
-    return (
-        "<details>"
-        "<summary>source</summary>"
-        "\n\n"
-        f"{fence}python"
-        "\n"
-        f"{src}"
-        "\n"
-        f"{fence}"
-        "\n\n"
-        "</details>"
-    )
-
-
-def percent_start() -> str:
-    """Substitute a `%%%START ...` marker.
-
-    Returns
-    -------
-    : str
-        HTML replacement.
-    """
-    return '<div class="objectdef">'
-
-
-def percent_end() -> str:
-    """Substitute a `%%%END ...` marker.
-
-    Returns
-    -------
-    : str
-        HTML replacement.
-    """
-    return "</div>"
-
-
 class AstdocsSourcePreprocessor(Preprocessor):
     """Catch and replace the `%%%SOURCE ...` markers."""
 
@@ -134,6 +68,76 @@ class AstdocsSourcePreprocessor(Preprocessor):
         """
         super().__init__(md)
         self.path = path
+
+    @staticmethod
+    def percent_source(
+        path: str,
+        lineno: int = 1,
+        lineno_end: int | None = None,
+    ) -> str:
+        """Read code from source file and substitute the `%%%SOURCE ...` marker.
+
+        Parameters
+        ----------
+        path : str
+            Path to the source file to extract code.
+        lineno : int
+            Beginning of the code block. Defaults to `1`.
+        lineno_end : int
+            End of the code block. Defaults to `None`.
+
+        Returns
+        -------
+        : str
+            HTML replacement.
+
+        Notes
+        -----
+        Line numbers are expected to start at 1.
+        """
+        with pathlib.Path(path).open() as f:
+            src = "".join(f.readlines()[lineno - 1 : lineno_end]).strip()
+
+        if "```" in src:
+            fences = sorted(re.findall(r"`+", src), key=len)
+            fence = "`" * (len(fences[-1]) + 1)
+        else:
+            fence = "```"
+
+        return (
+            "<details>"
+            "<summary>source</summary>"
+            "\n\n"
+            f"{fence}python"
+            "\n"
+            f"{src}"
+            "\n"
+            f"{fence}"
+            "\n\n"
+            "</details>"
+        )
+
+    @staticmethod
+    def percent_start() -> str:
+        """Substitute a `%%%START ...` marker.
+
+        Returns
+        -------
+        : str
+            HTML replacement.
+        """
+        return '<div class="objectdef">'
+
+    @staticmethod
+    def percent_end() -> str:
+        """Substitute a `%%%END ...` marker.
+
+        Returns
+        -------
+        : str
+            HTML replacement.
+        """
+        return "</div>"
 
     def run(self, lines: list[str]) -> list[str]:
         r"""Overwritten method to process the input `Markdown` lines.
@@ -161,7 +165,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
                 for m in re.finditer(SOURCE_RE, line):
                     lines[i] = line.replace(
                         m.group(0),
-                        percent_source(
+                        self.percent_source(
                             f"{self.path}/{m.group(1)}",
                             int(m.group(2)),
                             int(m.group(3)),

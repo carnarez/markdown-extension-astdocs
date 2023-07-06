@@ -1,7 +1,3 @@
-# Module `__init__`
-
-Make all relevant objects available at the root of the package.
-
 # Module `markdown_astdocs`
 
 Python-Markdown extension catching the `%%%` markers from `astdocs` output.
@@ -37,14 +33,6 @@ Process CLI calls.
 markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 ````
 
-**Functions**
-
-- [`percent_source()`](#markdown_astdocspercent_source): Read code from source file and
-  substitute the associated `%%%SOURCE ...` marker.
-- [`percent_start()`](#markdown_astdocspercent_start): Substitute a `%%%START ...`
-  marker.
-- [`percent_end()`](#markdown_astdocspercent_end): Substitute a `%%%END ...` marker.
-
 **Classes**
 
 - [`AstdocsSourcePreprocessor`](#markdown_astdocsastdocssourcepreprocessor): Catch and
@@ -54,54 +42,6 @@ markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 - [`AstdocsExtension`](#markdown_astdocsastdocsextension): Extension to be imported when
   calling for the renderer.
 
-## Functions
-
-### `markdown_astdocs.percent_source`
-
-```python
-percent_source(path: str, lineno: int = 1, lineno_end: int | None = None) -> str:
-```
-
-Read code from source file and substitute the associated `%%%SOURCE ...` marker.
-
-**Parameters**
-
-- `path` \[`str`\]: Path to the source file to extract code.
-- `lineno` \[`int`\]: Beginning of the code block. Defaults to `1`.
-- `lineno_end` \[`int`\]: End of the code block. Defaults to `None`.
-
-**Returns**
-
-- \[`str`\]: HTML replacement.
-
-**Notes**
-
-Line numbers are expected to start at 1.
-
-### `markdown_astdocs.percent_start`
-
-```python
-percent_start() -> str:
-```
-
-Substitute a `%%%START ...` marker.
-
-**Returns**
-
-- \[`str`\]: HTML replacement.
-
-### `markdown_astdocs.percent_end`
-
-```python
-percent_end() -> str:
-```
-
-Substitute a `%%%END ...` marker.
-
-**Returns**
-
-- \[`str`\]: HTML replacement.
-
 ## Classes
 
 ### `markdown_astdocs.AstdocsSourcePreprocessor`
@@ -110,6 +50,12 @@ Catch and replace the `%%%SOURCE ...` markers.
 
 **Methods**
 
+- [`percent_source()`](#markdown_astdocsastdocssourcepreprocessorpercent_source): Read
+  code from source file and substitute the `%%%SOURCE ...` marker.
+- [`percent_start()`](#markdown_astdocsastdocssourcepreprocessorpercent_start):
+  Substitute a `%%%START ...` marker.
+- [`percent_end()`](#markdown_astdocsastdocssourcepreprocessorpercent_end): Substitute a
+  `%%%END ...` marker.
 - [`run()`](#markdown_astdocsastdocssourcepreprocessorrun): Overwritten method to
   process the input `Markdown` lines.
 
@@ -131,6 +77,58 @@ All methods inherited, but the `run()` one below.
 - `path` \[`str`\]: Path prefix.
 
 #### Methods
+
+##### `markdown_astdocs.AstdocsSourcePreprocessor.percent_source`
+
+```python
+percent_source(path: str, lineno: int = 1, lineno_end: int | None = None) -> str:
+```
+
+Read code from source file and substitute the `%%%SOURCE ...` marker.
+
+**Parameters**
+
+- `path` \[`str`\]: Path to the source file to extract code.
+- `lineno` \[`int`\]: Beginning of the code block. Defaults to `1`.
+- `lineno_end` \[`int`\]: End of the code block. Defaults to `None`.
+
+**Returns**
+
+- \[`str`\]: HTML replacement.
+
+**Notes**
+
+Line numbers are expected to start at 1.
+
+**Decoration** via `@staticmethod`.
+
+##### `markdown_astdocs.AstdocsSourcePreprocessor.percent_start`
+
+```python
+percent_start() -> str:
+```
+
+Substitute a `%%%START ...` marker.
+
+**Returns**
+
+- \[`str`\]: HTML replacement.
+
+**Decoration** via `@staticmethod`.
+
+##### `markdown_astdocs.AstdocsSourcePreprocessor.percent_end`
+
+```python
+percent_end() -> str:
+```
+
+Substitute a `%%%END ...` marker.
+
+**Returns**
+
+- \[`str`\]: HTML replacement.
+
+**Decoration** via `@staticmethod`.
 
 ##### `markdown_astdocs.AstdocsSourcePreprocessor.run`
 
