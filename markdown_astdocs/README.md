@@ -1,3 +1,7 @@
+# Module `__init__`
+
+Make all relevant objects available at the root of the package.
+
 # Module `markdown_astdocs`
 
 Python-Markdown extension catching the `%%%` markers from `astdocs` output.
@@ -11,7 +15,7 @@ brilliant [`Python` implementation](https://github.com/Python-Markdown/markdown)
 - `ASTDOCS_WITH_LINENOS` shows the line numbers of the object in the code source;
   replaced by `<details><summary>source</summary>...</details>` logic.
 
-**Example:**
+## Example:
 
 ````python
 import markdown
@@ -33,7 +37,7 @@ Process CLI calls.
 markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 ````
 
-**Functions:**
+**Functions**
 
 - [`percent_source()`](#markdown_astdocspercent_source): Read code from source file and
   substitute the associated `%%%SOURCE ...` marker.
@@ -41,7 +45,7 @@ markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
   marker.
 - [`percent_end()`](#markdown_astdocspercent_end): Substitute a `%%%END ...` marker.
 
-**Classes:**
+**Classes**
 
 - [`AstdocsSourcePreprocessor`](#markdown_astdocsastdocssourcepreprocessor): Catch and
   replace the `%%%SOURCE ...` markers.
@@ -55,22 +59,22 @@ markdown.markdown(src, extensions=[AstdocsExtension(path="./package")])
 ### `markdown_astdocs.percent_source`
 
 ```python
-percent_source(path: str, lineno: int, lineno_end: int) -> str:
+percent_source(path: str, lineno: int = 1, lineno_end: int | None = None) -> str:
 ```
 
 Read code from source file and substitute the associated `%%%SOURCE ...` marker.
 
-**Parameters:**
+**Parameters**
 
 - `path` \[`str`\]: Path to the source file to extract code.
 - `lineno` \[`int`\]: Beginning of the code block. Defaults to `1`.
 - `lineno_end` \[`int`\]: End of the code block. Defaults to `None`.
 
-**Returns:**
+**Returns**
 
 - \[`str`\]: HTML replacement.
 
-**Notes:**
+**Notes**
 
 Line numbers are expected to start at 1.
 
@@ -82,7 +86,7 @@ percent_start() -> str:
 
 Substitute a `%%%START ...` marker.
 
-**Returns:**
+**Returns**
 
 - \[`str`\]: HTML replacement.
 
@@ -94,7 +98,7 @@ percent_end() -> str:
 
 Substitute a `%%%END ...` marker.
 
-**Returns:**
+**Returns**
 
 - \[`str`\]: HTML replacement.
 
@@ -104,7 +108,7 @@ Substitute a `%%%END ...` marker.
 
 Catch and replace the `%%%SOURCE ...` markers.
 
-**Methods:**
+**Methods**
 
 - [`run()`](#markdown_astdocsastdocssourcepreprocessorrun): Overwritten method to
   process the input `Markdown` lines.
@@ -117,12 +121,12 @@ AstdocsSourcePreprocessor(md: Markdown, path: str)
 
 All methods inherited, but the `run()` one below.
 
-**Parameters:**
+**Parameters**
 
 - `md` \[`markdown.core.Markdown`\]: Internal `Markdown` object to process.
 - `path` \[`str`\]: Extra path prefix to add when fishing for the source.
 
-**Attributes:**
+**Attributes**
 
 - `path` \[`str`\]: Path prefix.
 
@@ -131,24 +135,24 @@ All methods inherited, but the `run()` one below.
 ##### `markdown_astdocs.AstdocsSourcePreprocessor.run`
 
 ```python
-run(lines: typing.List[str]) -> typing.List[str]:
+run(lines: list[str]) -> list[str]:
 ```
 
 Overwritten method to process the input `Markdown` lines.
 
-**Parameters:**
+**Parameters**
 
-- `lines` \[`typing.List[str]`\]: `Markdown` content (split by `\n`).
+- `lines` \[`list[str]`\]: `Markdown` content (split by `\n`).
 
-**Returns:**
+**Returns**
 
-- \[`typing.List[str]`\]: Same list of lines, processed.
+- \[`list[str]`\]: Same list of lines, processed.
 
 ### `markdown_astdocs.AstdocsStartEndBlockProcessor`
 
 Process `%%%START ...` to `%%%END ...` blocks.
 
-**Methods:**
+**Methods**
 
 - [`test()`](#markdown_astdocsastdocsstartendblockprocessortest): Check if the `run()`
   method should be called to process the block.
@@ -158,54 +162,54 @@ Process `%%%START ...` to `%%%END ...` blocks.
 #### Constructor
 
 ```python
-AstdocsStartEndBlockProcessor(parser)
+AstdocsStartEndBlockProcessor(parser: BlockParser)
 ```
 
 All methods inherited, but the `test()` and `run()` ones below.
 
-**Parameters:**
+**Parameters**
 
-- \[`parser`\]: Parser of the `Markdown` object to process.
+parser: markdown.blockparser.BlockParser Parser of the `Markdown` object to process.
 
 #### Methods
 
 ##### `markdown_astdocs.AstdocsStartEndBlockProcessor.test`
 
 ```python
-test(parent: Element, block: str) -> re.Match:
+test(parent: Element, block: str) -> bool:
 ```
 
 Check if the `run()` method should be called to process the block.
 
-**Parameters:**
+**Parameters**
 
 - `parent` \[`xml.etree.ElementTree.Element`\]: Parent element that will host the tree
   of the current block, once rendered.
 - `block` \[`str`\]: Current block to process.
 
-**Returns:**
+**Returns**
 
-- \[`re.Match`\]: Match object if pattern is found, `None` otherwise.
+- \[`bool`\]: `True` if pattern is found, `False` otherwise.
 
 ##### `markdown_astdocs.AstdocsStartEndBlockProcessor.run`
 
 ```python
-run(parent: Element, blocks: typing.List[str]):
+run(parent: Element, blocks: list[str]) -> None:
 ```
 
 Bound the block within the remaining blocks and render it.
 
-**Parameters:**
+**Parameters**
 
 - `parent` \[`xml.etree.ElementTree.Element`\]: Parent element that will host the tree
   of the current block, once rendered.
-- `blocks` \[`typing.List[str]`\]: List of the remaining lines to process.
+- `blocks` \[`list[str]`\]: List of the remaining lines to process.
 
 ### `markdown_astdocs.AstdocsExtension`
 
 Extension to be imported when calling for the renderer.
 
-**Methods:**
+**Methods**
 
 - [`extendMarkdown()`](#markdown_astdocsastdocsextensionextendmarkdown): Overwritten
   method to process the content.
@@ -213,17 +217,17 @@ Extension to be imported when calling for the renderer.
 #### Constructor
 
 ```python
-AstdocsExtension(**kwargs)
+AstdocsExtension(path: str = ".", **kwargs)
 ```
 
 Make the extension configurable.
 
-**Parameters:**
+**Parameters**
 
 - `path` \[`str`\]: Extra path prefix to add when fishing for the source. Defaults to
   `.`.
 
-**Notes:**
+**Notes**
 
 We want to take care of the `%%%` markers as early as possible to avoid any HTML noise
 around them, hence the high priority.
@@ -233,11 +237,11 @@ around them, hence the high priority.
 ##### `markdown_astdocs.AstdocsExtension.extendMarkdown`
 
 ```python
-extendMarkdown(md: Markdown):
+extendMarkdown(md: Markdown) -> None:
 ```
 
 Overwritten method to process the content.
 
-**Parameters:**
+**Parameters**
 
 - `md` \[`markdown.core.Markdown`\]: Internal `Markdown` object to process.
