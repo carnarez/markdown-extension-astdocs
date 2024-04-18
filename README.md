@@ -6,3 +6,4 @@ simple:
 ```shell
 $ pip install git+https://github.com/carnarez/markdown-astdocs@master
 ```
+
