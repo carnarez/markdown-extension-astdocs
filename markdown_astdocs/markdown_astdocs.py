@@ -65,6 +65,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
         ----------
         path : str
             Path prefix.
+
         """
         super().__init__(md)
         self.path = path
@@ -94,6 +95,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
         Notes
         -----
         Line numbers are expected to start at 1.
+
         """
         with pathlib.Path(path).open() as f:
             src = "".join(f.readlines()[lineno - 1 : lineno_end]).strip()
@@ -125,6 +127,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
         -------
         : str
             HTML replacement.
+
         """
         return '<div class="objectdef">'
 
@@ -136,6 +139,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
         -------
         : str
             HTML replacement.
+
         """
         return "</div>"
 
@@ -151,6 +155,7 @@ class AstdocsSourcePreprocessor(Preprocessor):
         -------
         : list[str]
             Same list of lines, processed.
+
         """
         escaped = 0
 
@@ -185,6 +190,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
         ----------
         parser: markdown.blockparser.BlockParser
             Parser of the `Markdown` object to process.
+
         """
         super().__init__(parser)
 
@@ -202,6 +208,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
         -------
         : bool
             `True` if pattern is found, `False` otherwise.
+
         """
         return re.match(START_RE, block) is not None
 
@@ -214,6 +221,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
             Parent element that will host the tree of the current block, once rendered.
         blocks : list[str]
             List of the remaining lines to process.
+
         """
         block = blocks[0]
         blocks[0] = re.sub(START_RE, "", blocks[0])
@@ -225,7 +233,7 @@ class AstdocsStartEndBlockProcessor(BlockProcessor):
                 e = SubElement(parent, "div", attrib={"class": "objectdef"})
                 self.parser.parseBlocks(e, blocks[0 : i + 1])
 
-                for _ in range(0, i + 1):
+                for _ in range(i + 1):
                     blocks.pop(0)
 
                 return  # we done here
@@ -248,6 +256,7 @@ class AstdocsExtension(Extension):
         -----
         We want to take care of the `%%%` markers as early as possible to avoid any
         HTML noise around them, hence the high priority.
+
         """
         self.config = {
             "path": [path, "Extra path prefix to add when fishing for the source"],
@@ -261,6 +270,7 @@ class AstdocsExtension(Extension):
         ----------
         md : markdown.core.Markdown
             Internal `Markdown` object to process.
+
         """
         md.preprocessors.register(
             AstdocsSourcePreprocessor(md, self.getConfig("path")),
